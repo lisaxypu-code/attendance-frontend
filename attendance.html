@@ -6,34 +6,35 @@
 <style>
   body { font-family: Arial, sans-serif; margin: 20px; }
   label { display: block; margin: 10px 0 5px; }
-  input, button { padding: 5px; font-size: 14px; }
-  #result { margin-top: 20px; font-weight: bold; color: green; }
+  input, select, button { padding: 5px; font-size: 14px; }
 </style>
 </head>
 <body>
 
 <h2>Employee Attendance</h2>
 
-<label for="name">Name:</label>
-<input type="text" id="name" placeholder="Enter your name">
+<form id="attendanceForm">
+  <label for="name">Name:</label>
+  <input type="text" id="name" name="name" placeholder="Enter your name" required>
 
-<label for="action">Action:</label>
-<select id="action">
-  <option value="check-in">Check-in</option>
-  <option value="check-out">Check-out</option>
-</select>
+  <label for="action">Action:</label>
+  <select id="action" name="action">
+    <option value="check-in">Check-in</option>
+    <option value="check-out">Check-out</option>
+  </select>
 
-<label for="remark">Remark (optional):</label>
-<input type="text" id="remark" placeholder="Enter remark">
+  <label for="remark">Remark (optional):</label>
+  <input type="text" id="remark" name="remark" placeholder="Enter remark">
 
-<button id="submitBtn">Submit</button>
-
-<div id="result"></div>
+  <button type="submit">Submit</button>
+</form>
 
 <script>
 const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbx4zAa6pfZHup4nQX2oHXhfRRWZ1XzBDdJIo0McNRWcvEuKup4YY_lDfD5NAHFPBiSspQ/exec';
 
-document.getElementById('submitBtn').addEventListener('click', async () => {
+document.getElementById('attendanceForm').addEventListener('submit', async (e) => {
+  e.preventDefault(); // 阻止默认表单提交
+
   const name = document.getElementById('name').value.trim();
   const action = document.getElementById('action').value;
   const remark = document.getElementById('remark').value.trim();
@@ -52,14 +53,12 @@ document.getElementById('submitBtn').addEventListener('click', async () => {
     if (!response.ok) throw new Error("Network response not ok");
     const text = await response.text();
 
-    // 显示一句话结果
-    document.getElementById('result').textContent = text;
-
-    // 可选：清空输入框
-    // document.getElementById('remark').value = '';
+    // 跳转到一个新页面显示结果
+    const resultPage = window.open("", "_blank"); // 新窗口或标签页
+    resultPage.document.write(`<pre style="font-family: Arial, sans-serif; font-size:16px;">${text}</pre>`);
 
   } catch (err) {
-    document.getElementById('result').textContent = "Request failed: " + err;
+    alert("Request failed: " + err);
   }
 });
 </script>
