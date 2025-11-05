@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Employee Attendance System</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 30px; }
+    input, select, textarea, button { margin: 5px 0; padding: 5px; width: 200px; }
+    label { display: block; margin-top: 10px; }
+    #result { margin-top: 20px; padding: 10px; border: 1px solid #ccc; white-space: pre-wrap; word-wrap: break-word; }
+  </style>
+</head>
+<body>
+  <h2>Employee Attendance System</h2>
+
+  <label>Name:
+    <input type="text" id="name" placeholder="Enter your name">
+  </label>
+
+  <label>Action:
+    <select id="action">
+      <option value="check">Check</option>
+    </select>
+  </label>
+
+  <label>Remark:
+    <textarea id="remark" placeholder="Optional remark" rows="2"></textarea>
+  </label>
+
+  <button onclick="submitPunch()">Submit</button>
+
+  <div id="result"></div>
+
+  <script>
+    // Replace with your deployed Google Apps Script Web App URL
+    const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxVPOhgdsO5neNU4WTinb5DoUuMuuIVMN8oiPOeHSzvrxhxM_3D92GWmAGV20I1WZRE1w/exec';
+
+    function submitPunch() {
+      const name = document.getElementById('name').value.trim();
+      const action = document.getElementById('action').value;
+      const remark = document.getElementById('remark').value.trim();
+
+      if (!name) {
+        alert("Please enter your name");
+        return;
+      }
+
+      // 构造 URL，确保中文参数 encodeURIComponent
+      const url = `${WEB_APP_URL}?name=${encodeURIComponent(name)}&action=${encodeURIComponent(action)}&remark=${encodeURIComponent(remark)}`;
+
+      fetch(url)
+        .then(response => response.json())
+        .then(data => {
+          // textContent 显示 JSON，防止中文乱码
+          document.getElementById('result').textContent = JSON.stringify(data, null, 2);
+        })
+        .catch(err => {
+          document.getElementById('result').textContent = "Request failed: " + err;
+        });
+    }
+  </script>
+</body>
+</html>
